@@ -1,11 +1,16 @@
-import './App.css'
+import Hero from './components/Hero';
+import Highlights from './components/Highlights';
+import Navbar from './components/Navbar';
+import './styles/index.css';
 
-function App() {
-	return <>
-    <div>
-      <h1 className=''>React App</h1>
-    </div>
-  </>;
-}
+const App = () => {
+	return (
+		<main className='bg-black'>
+			<Navbar />
+			<Hero />
+			<Highlights />
+		</main>
+	);
+};
 
 export default App;
