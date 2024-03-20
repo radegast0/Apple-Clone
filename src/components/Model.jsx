@@ -1,12 +1,13 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import ModelView from './ModelView';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { yellowImg } from '../utils';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { View } from '@react-three/drei';
 import { models, sizes } from '../constants';
+import { animateWithGsapTimeline } from '../utils/animations';
 
 const Model = () => {
 	const [size, setSize] = useState('small');
@@ -17,7 +18,7 @@ const Model = () => {
 	});
 
 	// camera control
-	const cameraControllSmall = useRef();
+	const cameraControlSmall = useRef();
 	const cameraControllLarge = useRef();
 
 	// model
@@ -27,6 +28,22 @@ const Model = () => {
 	// rotation
 	const [smallRotation, setSmallRotation] = useState(0);
 	const [largeRotation, setLargeRotation] = useState(0);
+
+	const tl = gsap.timeline();
+	useEffect(() => {
+		if (size === 'large') {
+			animateWithGsapTimeline(tl, small, smallRotation, '#view1', '#view2',{
+				transform: 'translateX(-100%)',
+				duration: 2,
+			});
+		}
+		if (size === 'small') {
+			animateWithGsapTimeline(tl, large, largeRotation, '#view2', '#view1',{
+				transform: 'translateX(0)',
+				duration: 2,
+			});
+		}
+	}, [size]);
 
 	useGSAP(() => {
 		gsap.to('#heading', {
@@ -45,12 +62,12 @@ const Model = () => {
 					Take a closer look at the model
 				</h1>
 				<div className="flex flex-col items-center mt-5">
-					<div className="w-full h-[75vh] md:h-[90vh] overflow-hidden">
+					<div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
 						<ModelView
 							index={1}
 							groupRef={small}
 							gsapType="view1"
-							controlRef={cameraControllSmall}
+							controlRef={cameraControlSmall}
 							setRotationState={setSmallRotation}
 							item={model}
 							size={size}
@@ -65,7 +82,7 @@ const Model = () => {
 							size={size}
 						/>
 						<Canvas
-							className="w-full h-full"
+							className="w-full h-full mb-12"
 							style={{
 								position: 'fixed',
 								top: 0,
@@ -87,7 +104,7 @@ const Model = () => {
 									<li
 										key={i}
 										className="w-6 h-6 rounded-full mx-2 cursor-pointer"
-										style={{ backgroundColor: item.color[0]}}
+										style={{ backgroundColor: item.color[0] }}
 										onClick={() => {
 											setModel(item);
 										}}
@@ -104,7 +121,7 @@ const Model = () => {
 											color: size === value ? 'black' : 'white',
 										}}
 										key={label}
-                                        onClick={() => setSize(value)}
+										onClick={() => setSize(value)}
 									>
 										{' '}
 										{label}{' '}
