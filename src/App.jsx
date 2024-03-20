@@ -9,8 +9,8 @@ const App = () => {
 		<main className='bg-black'>
 			<Navbar />
 			<Hero />
-			<Model />
 			<Highlights />
+			<Model />
 		</main>
 	);
 };
